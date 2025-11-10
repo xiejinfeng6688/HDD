@@ -657,13 +657,16 @@
 <body>
 <canvas id="pinkboard"></canvas>
 <script>
+  // 根据设备宽度自适应心形与粒子大小（手机端更小）
+  var isSmallScreen = window.innerWidth <= 575;
+  var heartScale = isSmallScreen ? 0.75 : 1.0;
   var settings = {
     particles: {
       length: 800, // maximum amount of particles (增加粒子数量)
       duration: 2, // particle duration in sec
-      velocity: 100, // particle velocity in pixels/sec
+      velocity: isSmallScreen ? 80 : 100, // particle velocity in pixels/sec（手机端略小）
       effect: -0.75, // play with this for a nice effect
-      size: 32, // particle size in pixels (稍微增大)
+      size: isSmallScreen ? 24 : 32, // particle size in pixels（手机端更小）
     },
   };
   (
@@ -867,6 +870,9 @@
       var amount = particleRate * deltaTime;
       for (var i = 0; i < amount; i++) {
         var pos = pointOnHeart(Math.PI - 2 * Math.PI * Math.random());
+        // 在小屏设备上缩放心形轮廓
+        pos.x *= heartScale;
+        pos.y *= heartScale;
         var dir = pos.clone().length(settings.particles.velocity);
         particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
       }
